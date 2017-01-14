@@ -84,30 +84,32 @@ a modern password manager that users have come to expect, in addition to its
 security improvements.
 
 \section{Threat Model and Assumptions}
-The threat model for HM is an adversary who is assumed to steal encrypted
+The threat model for HM \dnote{don't like this acronym - prefer to just use Horcrux} is an adversary who is assumed to steal encrypted
 credentials from a variety of databases belonging to the user (less than a
 threshold value $t$ as described in section 3), and can execute numerous
-autofill attacks such as XSS/CSRF against a given domain a user is visiting. 
+autofill attacks such as XSS/CSRF against a given domain a user is visiting.  \dnote{this is a pretty confusing way to define the threat model.  Threat #1 is adversary who acquires password manager's database, and can guess user's master password; threat #2 is adversary who attacks user without access to PM database, using access point, web, etc. attacks (need to define this one more carefully); threat #0 is a malicious, incompetent, or compromised password manager operator, who can client-side code.  Try to make up a table that shows how different password methods are resistent to different treats (including no password manager, etc.)}
+
 We assume that any credentials stolen could be unencrypted, and attempted to
-recombine with the proposed secret-sharing scheme.
+recombine with the proposed secret-sharing scheme. \dnote{? don't understand this or its relevant}
 
 On the part of the user, we expect careful selection and variety in database
 keystores chosen for their credentials, as well as use of a strong master password.
 If the adversary can obtain or brute-force the users' local token and their
-master password, the HM will undoubtedly be compromised. However, attacks on
+master password, the HM will undoubtedly be compromised. \dnote{really? I thought your goal is to provide something better than standard PMs - if your assumption is user has strong password, and that adversary can win if they can brute-force user's local token/password (not sure how these are different), that doesn't seem like enough of a win. I would want there to be a design that means the attacker cannot do any kind of useful attack on local password/token without access to all the PW databases, but not sure if your design has this property.}
+However, attacks on
 database credentials and autofill vulnerabilities are much more difficult for an
 adversary to compromise.
 
 Most commercial password managers rely on Amazon Web Services or company servers 
 to store encrypted user credentials. We assume that those who do not are not
-using secret sharing as part of their proprietary software.
+using secret sharing as part of their proprietary software. \dnote{?  not getting the point of this paragraph}
 
-\section{Protecting Consumers from Cloud Storage Theft}
+\section{Protecting Users from Cloud Storage Theft}
 HM is unique in that it does not trust any one database store to keep a user's
 encrypted passwords. Instead, HM splits passwords across multiple databases from
-an arbitrary amount of cloud providers using ``horcruxes''; horcruxes are pieces
+an arbitrary amount of cloud providers using ``horcruxes'' \dnote{are you using horcruxes here to mean anything other than standard secret shares?  if so, let's avoid introducing a new confusing term here - it is just a secret share, which is well understood by most in this community}; horcruxes are pieces
 (``shares'') of each of the user's passwords for a given website, split into
-shares using Shamir's Secret Sharing \cite{shamir1979share}. HM distributes $n$
+shares using Shamir secret sharing~\cite{shamir1979share}. HM distributes $n$
 shares (``horcruxes'') of a given credential across $n$ servers specified by the
 end-user (e.g. AWS, Azure, personal server), requiring a security parameter of
 exactly $\{k \mid 0 < k\leq n\}$ horcruxes to reconstruct the credential when
@@ -119,9 +121,11 @@ allow the user to still reconstruct passwords in the event of any keystore being
 compromised or taken offline.
 
 \section{Protecting Consumers from Autofill Vulnerabilities}
+\dnote{can real goal of this be to make a small, auditable client side?
+explain that most of the complexity of a PM is doing the autofill, and it is also vulnerable to various threats, so main idea is to move all of that complexity out of the trusted computing base.  All that needs to be audited is that part that obtains and combines the shares, and this is made as small and simple as possible by doing it after "dummy" password is intercepted in outgoing network traffic.}
 The proposed password manager also includes a means to prevent many common
 autofill vulnerabilities from occurring while still offering autofill capability
-for users, by using an ``auror''. The auror is a network traffic analysis tool
+for users, by using an ``auror'' \dnote{cite? is this something standard, or are you making up a new name for it? isn't it just using a Firefox extension API that allows hooking into the traffic?}. The auror is a network traffic analysis tool
 that runs as Javascript in the browser as part of the PM extension; upon
 visiting a website with a login form, the auror checks whether or not the
 website relies on client-side encryption before sending the user's credentials. 
@@ -144,11 +148,15 @@ some extent, usability, it more than makes up for in protecting consumers from
 the major security and privacy problems which LastPass, Dashlane, 1Password, and
 others leave at risk.
 
+\dnote{important thing about the implementation is how small the part that needs to be audited is, include lines of code numbers, and clear explanation of design and where the trusted part is}
+
 \subsection{Tests}
 See the `tests' directory of our code for output logs. We tested HM on several
 popular websites for functionality using keystores in Amazon Web Services, as
 well as for successfully evading an XSS attack outlined by (source). Password
 reconstruction from $t$ shares was tested ...
+
+\dnote{are there any results to include? main question is if the latency of needing to combine shares is noticible to users, and how much it is}
 
 \section{Future Work}
 There are a number of improvements that can be made to HM in order to add to its
@@ -157,6 +165,7 @@ and Google Cloud Platform would provide a stronger variety of sources for a
 consumer to trust when distributing their credentials. Actual testing of
 commercial password managers and HM for vulnerabilities as in \cite{silver2014password}
 would further validate the project's viability as a usable tool for consumers.
+\dnote{focus on more important issues than just supporting platforms - how to increase trust and make it more meaningful}
 
 \section{Conclusion}
 The conclusion.
