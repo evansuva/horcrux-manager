@@ -7,6 +7,7 @@
 \begin{document}
 \title{horcrux-manager: Securing Password Management with Secret Sharing and
 Autofill Defenses}
+\dnote{prefer a more pronouncable title - is the "-manager" necessary?  Horcrux: A Password Manager for Paranoids}
 
 \author{\IEEEauthorblockN{Samuel Havron
 \IEEEauthorblockA{
@@ -14,6 +15,8 @@ Autofill Defenses}
 \href{mailto:havron@virginia.edu}{havron@virginia.edu}\\}
 }
 
+\dnote{check call if submissions are supposed to be anonymous}
+\dnote{additional authors}
 }
 \maketitle
 
@@ -36,26 +39,27 @@ some references to be used:
 
 
 The web is full of mixed advice on creating and managing passwords for consumers'
-online accounts (Gaw, 2006), and users often ignore frustrating, burdensome
+online accounts \dnote{for papers like this, just use \cite{gaw}, only need the cite number in text} (Gaw, 2006), and users often ignore frustrating, burdensome
 security advice for rational reasons (Herley, 2009). Coupled with the risk that
 recent major password database leaks pose to users' security across websites
 with reused passwords (Roberts, 2016; LLV, 2016), there are many practical
 problems of secure password creation and management by users that have yet to be
 solved.
 
-Users are often asked to remember many different passwords for their online
+\dnote{this sentence belongs elsewhere: Users are often asked to remember many different passwords for their online
 accounts, with an estimated 43-51\% of Internet users reusing the same password
-across multiple sites due to password fatigue (Das, 2014). Commercial password
-managers (PMs) such as LastPass, Dashlane, and 1Password attempt to reduce this
-burden by only asking the user to remember one master password, which serves as
-the key to an encrypted file containing all of the user's online account
-passwords, which are typically generated randomly by the password manager
-itself.
+across multiple sites due to password fatigue (Das, 2014).}
 
 Password Managers (PMs), while introducing new security problems of their own,
 offer a solution to password fatigue for users and promise
 to eliminate the practice of insecure, reusable passwords across different
-websites. However, Ion et. al \cite{ion2015no} found
+websites.  Password managers such as LastPass, Dashlane, and 1Password \dnote{add cites to PW managers}
+require that the user remember one master password, which serves as
+the key to an encrypted file containing all of the user's online account
+passwords. Actual account passwords are typically generated randomly by the password manager
+itself.
+
+However, Ion et. al \cite{ion2015no} found
 that many general users did not consider password managers as an important, or
 even trusted security practice to stay safe online: ``password managers were
 regarded with skepticism by non-experts, who instead preferred to remember
@@ -63,6 +67,8 @@ passwords, partly because, as one participant said, 'no one can hack my mind.'''
 Yet the same study found that computer security ``experts'' reported using a
 password manager as one of the most important practices a user can do to
 maintain online safety.
+
+\dnote{next paragraph seems out of place here - need to figure out what is the main motivation - seems like a better story would focus on need to trust the PW manager for both the client-side software, and generation/storage of encrypted passwords, and use incidents of PW manager vulnerabilities compromises to illustrate this}
 
 Many cloud-based PMs rely on client-side encryption/decryption and other strong
 security practices to protect their users' data against autofill vulnerabilities
@@ -73,15 +79,19 @@ may begin to lose trust in their PM provider, or perhaps already have. In this
 paper, we describe a new password management system with stronger security
 guarantees for cloud-based
 PMs on both the client- (autofill policies) and server- (portability/storage
-policies) side.
+policies) side.  \dnote{make the key story about not trusting any one entity to provide client-side code and store/generate passwords - and goal is to minimize the code that must actually be trusted to a very small, auditable program. My hope would be the actual code someone needs to trust is small enough to include in an appendix to the paper (< 1 page), and there is a clear explanation why that is the only code that needs to be trusted.}
 
-We introduce `horcrux-manager` (HM), a new password manager which
-does not rely on trusting any single cloud provider with the users' passwords,
+We introduce `horcrux-manager` (Horcrux) \dnote{add a footnote explaining where the name comes from}, a new password manager which
+does not rely on trusting any single cloud provider with the users' (encrypted) passwords \dnote{the auto-fill focus seems secondary to the shinking code to audit, but can motivate the design, that also has benefits in preventing auto-fill vulnerabilities} 
 nor does it trust any website's form submission to properly protect the user
-from autofill vulnerabilities. "horcrux-manager" is developed as a
-Firefox web extension, and continues to provide numerous features of
-a modern password manager that users have come to expect, in addition to its
-security improvements.
+from autofill vulnerabilities. "horcrux-manager" is available \dnote{hopefully it is true to call it "available" not just developed} as an open source
+Firefox extension.
+\dnote{cut the part about modern features unless there is something specific you have in mind for this worth mentioning}
+%, and continues to provide numerous features of
+%a modern password manager that users have come to expect, in addition to its
+%security improvements.
+
+\dnote{could use a short contributions paragraph here, that doubles as a roadmap to the paper}
 
 \section{Threat Model and Assumptions}
 The threat model for HM is an adversary who is assumed to steal encrypted
